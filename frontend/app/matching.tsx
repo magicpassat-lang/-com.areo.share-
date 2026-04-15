@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Audio } from 'expo-av';
+import { useAudioPlayer } from 'expo-audio';
 import axios from 'axios';
 import { useAuth } from '../src/context/AuthContext';
 
@@ -58,14 +58,13 @@ export default function Matching() {
     } catch {}
   };
 
-  const playNotificationSound = async () => {
+  const notifPlayer = useAudioPlayer('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+
+  const playNotificationSound = () => {
     try {
-      if (Platform.OS !== 'web') {
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg' },
-          { shouldPlay: true, volume: 1.0 }
-        );
-        await sound.playAsync();
+      if (notifPlayer) {
+        notifPlayer.volume = 1.0;
+        notifPlayer.play();
       }
     } catch {}
   };

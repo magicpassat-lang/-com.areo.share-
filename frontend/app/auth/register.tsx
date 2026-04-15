@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../src/context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+import FlightMap from '../../src/components/FlightMap';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -41,111 +42,119 @@ export default function Register() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex}>
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-          <View style={styles.header}>
-            <Text style={styles.logo}>AERO</Text>
-            <Text style={styles.logoAccent}>SHARE</Text>
-            <Text style={styles.subtitle}>JOIN THE RIDE</Text>
-          </View>
-
-          <View style={styles.form}>
-            <Text style={styles.label}>FULL NAME</Text>
-            <TextInput
-              testID="register-name-input"
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-              placeholder="John Doe"
-              placeholderTextColor="#A1A1AA"
-            />
-
-            <Text style={styles.label}>EMAIL</Text>
-            <TextInput
-              testID="register-email-input"
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="you@email.com"
-              placeholderTextColor="#A1A1AA"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-
-            <Text style={styles.label}>PASSWORD</Text>
-            <View style={styles.passwordRow}>
-              <TextInput
-                testID="register-password-input"
-                style={[styles.input, styles.passwordInput]}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Min 6 characters"
-                placeholderTextColor="#A1A1AA"
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword(!showPassword)}>
-                <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#71717A" />
-              </TouchableOpacity>
+    <View style={styles.darkBg}>
+      <FlightMap />
+      <SafeAreaView style={styles.safe}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex}>
+          <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+            <View style={styles.header}>
+              <Text style={styles.logo}>AERO</Text>
+              <Text style={styles.logoAccent}>SHARE</Text>
+              <Text style={styles.subtitle}>JOIN THE RIDE</Text>
             </View>
 
-            {error ? <Text testID="register-error" style={styles.error}>{error}</Text> : null}
+            <View style={styles.formCard}>
+              <Text style={styles.label}>FULL NAME</Text>
+              <TextInput
+                testID="register-name-input"
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="John Doe"
+                placeholderTextColor="#52525B"
+              />
 
-            <TouchableOpacity
-              testID="register-submit-btn"
-              style={[styles.btn, loading && styles.btnDisabled]}
-              onPress={handleRegister}
-              disabled={loading}
-              activeOpacity={0.8}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <Text style={styles.btnText}>CREATE ACCOUNT</Text>
-              )}
-            </TouchableOpacity>
+              <Text style={styles.label}>EMAIL</Text>
+              <TextInput
+                testID="register-email-input"
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="you@email.com"
+                placeholderTextColor="#52525B"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
 
-            <TouchableOpacity
-              testID="go-to-login-btn"
-              style={styles.linkBtn}
-              onPress={() => router.back()}
-            >
-              <Text style={styles.linkText}>
-                HAVE AN ACCOUNT? <Text style={styles.linkBold}>SIGN IN</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              <Text style={styles.label}>PASSWORD</Text>
+              <View style={styles.passwordRow}>
+                <TextInput
+                  testID="register-password-input"
+                  style={[styles.input, styles.passwordInput]}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Min 6 characters"
+                  placeholderTextColor="#52525B"
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity style={styles.eyeBtn} onPress={() => setShowPassword(!showPassword)}>
+                  <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#71717A" />
+                </TouchableOpacity>
+              </View>
+
+              {error ? <Text testID="register-error" style={styles.error}>{error}</Text> : null}
+
+              <TouchableOpacity
+                testID="register-submit-btn"
+                style={[styles.btn, loading && styles.btnDisabled]}
+                onPress={handleRegister}
+                disabled={loading}
+                activeOpacity={0.8}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#09090B" />
+                ) : (
+                  <Text style={styles.btnText}>CREATE ACCOUNT</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                testID="go-to-login-btn"
+                style={styles.linkBtn}
+                onPress={() => router.back()}
+              >
+                <Text style={styles.linkText}>
+                  HAVE AN ACCOUNT? <Text style={styles.linkBold}>SIGN IN</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFFFFF' },
+  darkBg: { flex: 1, backgroundColor: '#09090B' },
+  safe: { flex: 1 },
   flex: { flex: 1 },
   scroll: { flexGrow: 1, justifyContent: 'center', padding: 24 },
-  header: { alignItems: 'center', marginBottom: 48 },
-  logo: { fontSize: 52, fontWeight: '900', color: '#09090B', letterSpacing: -3 },
+  header: { alignItems: 'center', marginBottom: 32 },
+  logo: { fontSize: 52, fontWeight: '900', color: '#FFFFFF', letterSpacing: -3 },
   logoAccent: { fontSize: 52, fontWeight: '900', color: '#FDE047', letterSpacing: -3, marginTop: -16 },
-  subtitle: { fontSize: 11, fontWeight: '600', color: '#71717A', letterSpacing: 4, marginTop: 12 },
-  form: { width: '100%' },
-  label: { fontSize: 11, fontWeight: '700', color: '#71717A', letterSpacing: 3, marginBottom: 8, marginTop: 16 },
+  subtitle: { fontSize: 11, fontWeight: '600', color: 'rgba(255,255,255,0.4)', letterSpacing: 5, marginTop: 14 },
+  formCard: {
+    backgroundColor: 'rgba(24, 24, 27, 0.85)', borderWidth: 1,
+    borderColor: 'rgba(253, 224, 71, 0.15)', padding: 24,
+  },
+  label: { fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.4)', letterSpacing: 3, marginBottom: 8, marginTop: 16 },
   input: {
-    height: 56, backgroundColor: '#F4F4F5', borderWidth: 2, borderColor: '#E4E4E7',
-    paddingHorizontal: 16, fontSize: 16, color: '#09090B',
+    height: 56, backgroundColor: 'rgba(39, 39, 42, 0.8)', borderWidth: 1,
+    borderColor: 'rgba(113, 113, 122, 0.3)', paddingHorizontal: 16,
+    fontSize: 16, color: '#FFFFFF',
   },
   passwordRow: { position: 'relative' },
   passwordInput: { paddingRight: 50 },
   eyeBtn: { position: 'absolute', right: 16, top: 17 },
-  error: { color: '#DC2626', fontSize: 13, fontWeight: '600', marginTop: 12 },
+  error: { color: '#EF4444', fontSize: 13, fontWeight: '600', marginTop: 12 },
   btn: {
-    height: 56, backgroundColor: '#09090B', alignItems: 'center', justifyContent: 'center',
+    height: 56, backgroundColor: '#FDE047', alignItems: 'center', justifyContent: 'center',
     marginTop: 24,
   },
   btnDisabled: { opacity: 0.6 },
-  btnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '800', letterSpacing: 3 },
+  btnText: { color: '#09090B', fontSize: 15, fontWeight: '900', letterSpacing: 3 },
   linkBtn: { marginTop: 20, alignItems: 'center' },
-  linkText: { fontSize: 12, color: '#71717A', letterSpacing: 2 },
-  linkBold: { color: '#09090B', fontWeight: '800' },
+  linkText: { fontSize: 12, color: 'rgba(255,255,255,0.4)', letterSpacing: 2 },
+  linkBold: { color: '#FDE047', fontWeight: '800' },
 });
