@@ -1,16 +1,26 @@
-import { Text, View, StyleSheet, Image } from "react-native";
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import React, { useEffect } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../src/context/AuthContext';
 
 export default function Index() {
-  console.log(EXPO_PUBLIC_BACKEND_URL, "EXPO_PUBLIC_BACKEND_URL");
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      router.replace('/(tabs)/home');
+    } else {
+      router.replace('/auth/login');
+    }
+  }, [user, loading]);
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/images/app-image.png")}
-        style={styles.image}
-      />
+      <Text style={styles.logo}>AERO</Text>
+      <Text style={styles.logoAccent}>SHARE</Text>
+      <ActivityIndicator size="large" color="#09090B" style={{ marginTop: 24 }} />
     </View>
   );
 }
@@ -18,13 +28,21 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0c0c",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+  logo: {
+    fontSize: 48,
+    fontWeight: '900',
+    color: '#09090B',
+    letterSpacing: -2,
+  },
+  logoAccent: {
+    fontSize: 48,
+    fontWeight: '900',
+    color: '#FDE047',
+    letterSpacing: -2,
+    marginTop: -12,
   },
 });
