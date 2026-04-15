@@ -1,0 +1,81 @@
+{
+  "theme": "light",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "design_principles": [
+    "One-button focus: The primary action must dominate the screen.",
+    "Mobile-first constraint: On desktop, the app runs in a centralized max-w-md container simulating a phone screen, with a dark/subtle outer background.",
+    "Brutalist clarity: Sharp edges (rounded-none or max rounded-sm), high contrast borders (2px solid black), no soft shadows.",
+    "Typography as UI: Massive, tightly tracked headings and highly legible body text."
+  ],
+  "colors": {
+    "background": "#FFFFFF",
+    "surface": "#F4F4F5",
+    "primary": "#09090B",
+    "primary_foreground": "#FFFFFF",
+    "accent": "#FDE047",
+    "accent_foreground": "#09090B",
+    "border": "#E4E4E7",
+    "black_border": "#09090B",
+    "success": "#16A34A",
+    "warning": "#F59E0B",
+    "error": "#DC2626"
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Outfit, sans-serif",
+      "style": "tracking-tight font-bold uppercase"
+    },
+    "body": {
+      "font_family": "DM Sans, sans-serif",
+      "style": "leading-relaxed text-zinc-800"
+    },
+    "mono": {
+      "font_family": "JetBrains Mono, monospace",
+      "style": "tracking-widest uppercase text-xs"
+    },
+    "sizes": {
+      "h1": "text-4xl sm:text-5xl font-black uppercase tracking-tighter leading-none",
+      "h2": "text-2xl sm:text-3xl font-bold tracking-tight",
+      "body": "text-base sm:text-lg",
+      "caption": "text-xs sm:text-sm font-mono tracking-widest text-zinc-500 uppercase"
+    }
+  },
+  "layout": {
+    "container": "w-full max-w-md mx-auto min-h-screen bg-white shadow-2xl relative overflow-hidden flex flex-col border-x border-zinc-200",
+    "spacing": "p-6 sm:p-8",
+    "bento_grid": "grid grid-cols-2 gap-4"
+  },
+  "components": {
+    "button": "h-14 w-full bg-zinc-950 text-white font-bold uppercase tracking-widest rounded-none border-2 border-transparent hover:bg-zinc-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2",
+    "button_secondary": "h-14 w-full bg-white text-zinc-950 font-bold uppercase tracking-widest rounded-none border-2 border-zinc-950 hover:bg-zinc-100 transition-colors flex items-center justify-center gap-2",
+    "input": "h-14 w-full bg-zinc-50 border-2 border-zinc-200 focus:border-zinc-950 rounded-none px-4 text-lg outline-none transition-colors",
+    "card": "bg-white border-2 border-zinc-950 rounded-none p-6",
+    "chat_bubble_self": "bg-zinc-950 text-white p-4 rounded-2xl rounded-tr-none max-w-[80%]",
+    "chat_bubble_other": "bg-zinc-100 text-zinc-950 p-4 rounded-2xl rounded-tl-none max-w-[80%]",
+    "radar_ping": "absolute w-full h-full rounded-full border-2 border-yellow-400 animate-ping opacity-75"
+  },
+  "motion": {
+    "page_transition": "framer-motion slide-in from right (initial: { x: 100, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -100, opacity: 0 })",
+    "radar_animation": "framer-motion looping scale and opacity pulse for waiting screen"
+  },
+  "assets": {
+    "icons": "lucide-react",
+    "fallback_strategy": "Image generation failed due to API limits. Rely STRICTLY on Lucide icons, massive typography, and high-contrast color blocking for visual impact. DO NOT use placeholder images."
+  },
+  "specific_screens": {
+    "landing": "Clean layout. Top: Logo ('AERO-SHARE' in Outfit black). Middle: Form stack (Location, Airport Select, Time). Bottom fixed: Massive primary CTA button.",
+    "payment": "Stark contrast. Large '£1.99' text. Subtitle: 'Non-refundable match fee'. Trust badges via text/icons.",
+    "waiting_radar": "Black background. Yellow radar ping animation in center. Mono-spaced countdown timer. Pulsing text: 'SEARCHING WITHIN 15KM...'.",
+    "chat": "Standard mobile chat layout but with brutalist aesthetic. Sticky header with match details. Scrollable messages. Bottom fixed input."
+  },
+  "instructions_to_main_agent": [
+    "Install and configure Tailwind CSS, Framer Motion, and lucide-react.",
+    "Implement the 'mobile-first constraint' by wrapping the main App component in a centered max-w-md container. The `body` background should be `bg-zinc-100`.",
+    "Ensure all interactive and key informational elements MUST include a `data-testid` attribute (e.g., data-testid='login-button', data-testid='airport-select').",
+    "Use standard HTML + Tailwind for structural layouts to preserve the brutalist edge. Avoid using pre-built Shadcn Card components if they force rounded soft shadow looks. Override Shadcn Select and Input components with `rounded-none border-2 border-zinc-200` to match the style.",
+    "For the payment wall, mock a minimal Stripe integration screen with a realistic-looking checkout layout.",
+    "For the waitlist, implement a simple audio `AudioContext` beep or use an HTML5 `<audio>` element with a synthetic notification sound when a match is found.",
+    "Since image APIs failed, do NOT use placeholder images. Use `lucide-react` icons sized up massively (e.g., `w-32 h-32 text-zinc-200`) for any necessary abstract graphics or empty states.",
+    "Write code for .js files, as the project uses JavaScript, not TypeScript."
+  ]
+}
