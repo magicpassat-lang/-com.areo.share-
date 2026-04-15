@@ -528,6 +528,102 @@ async def check_match(ride_id: str, request: Request):
 async def root():
     return {"message": "AeroShare API running"}
 
+# --- Privacy Policy (HTML for Google Play) ---
+from fastapi.responses import HTMLResponse
+
+@app.get("/api/privacy", response_class=HTMLResponse)
+async def privacy_policy():
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEROSHARE — Privacy Policy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#09090B;color:#d4d4d8;line-height:1.8;padding:24px;max-width:720px;margin:0 auto}
+h1{color:#FDE047;font-size:28px;font-weight:900;letter-spacing:2px;margin-bottom:8px}
+h2{color:#fff;font-size:18px;font-weight:800;margin-top:32px;margin-bottom:12px;letter-spacing:1px;border-left:3px solid #FDE047;padding-left:12px}
+p,li{font-size:15px;margin-bottom:10px}
+ul{padding-left:20px}
+a{color:#FDE047}
+.updated{color:#71717A;font-size:12px;letter-spacing:2px;margin-bottom:32px}
+.logo{font-size:36px;font-weight:900;color:#fff;letter-spacing:-2px}
+.logo span{color:#FDE047}
+</style>
+</head>
+<body>
+<div class="logo">AERO<span>SHARE</span></div>
+<h1>Privacy Policy</h1>
+<p class="updated">LAST UPDATED: APRIL 2026</p>
+
+<p>AeroShare ("we", "us", "our") operates the AEROSHARE mobile application. This Privacy Policy explains how we collect, use, and protect your personal information when you use our airport taxi ride-sharing service.</p>
+
+<h2>1. Information We Collect</h2>
+<p>We collect the following types of data:</p>
+<ul>
+<li><strong>Account Data:</strong> Name, email address, and encrypted password when you register.</li>
+<li><strong>Location Data:</strong> Your GPS coordinates (latitude/longitude) when you use the "Detect Location" feature. This is used solely to match you with nearby riders heading to the same airport.</li>
+<li><strong>Ride Data:</strong> Your selected airport, flight date/time, and pickup address.</li>
+<li><strong>Payment Data:</strong> We do NOT store your credit card details. All payments are securely processed by <strong>Stripe</strong> (our third-party payment processor). We store only the transaction ID and payment status.</li>
+<li><strong>Messages:</strong> Chat messages sent within ride groups to coordinate taxi sharing.</li>
+</ul>
+
+<h2>2. How We Use Your Data</h2>
+<ul>
+<li><strong>Ride Matching:</strong> Your location and flight details are used to find other users heading to the same airport within a 15km radius and 60-minute time window.</li>
+<li><strong>Communication:</strong> To enable group chat between matched riders.</li>
+<li><strong>Notifications:</strong> To alert you when a ride match is found.</li>
+<li><strong>Payment Processing:</strong> To process the £1.99 non-refundable match fee via Stripe.</li>
+<li><strong>Service Improvement:</strong> Anonymised usage data to improve the app experience.</li>
+</ul>
+
+<h2>3. Data Sharing</h2>
+<p>We do NOT sell your personal data. We share data only with:</p>
+<ul>
+<li><strong>Stripe:</strong> For secure payment processing (<a href="https://stripe.com/privacy" target="_blank">Stripe Privacy Policy</a>).</li>
+<li><strong>Matched Riders:</strong> Your first name and general pickup area are shared with matched riders to coordinate the taxi.</li>
+<li><strong>Legal Requirements:</strong> If required by law or to protect our rights.</li>
+</ul>
+
+<h2>4. Location Data</h2>
+<p>We request access to your device's GPS location <strong>only when you tap "Detect Location"</strong>. We do not track your location in the background. Location data is stored only for the duration of the ride matching process.</p>
+
+<h2>5. Data Security</h2>
+<ul>
+<li>Passwords are hashed using <strong>bcrypt</strong> (industry-standard encryption).</li>
+<li>Authentication uses <strong>JWT tokens</strong> with expiration.</li>
+<li>All communications are encrypted via <strong>HTTPS/TLS</strong>.</li>
+<li>Payment data is handled exclusively by Stripe's PCI-DSS compliant infrastructure.</li>
+</ul>
+
+<h2>6. Data Retention</h2>
+<p>We retain your account and ride data for as long as your account is active. You may request deletion of your account and all associated data at any time by contacting us.</p>
+
+<h2>7. Your Rights</h2>
+<p>Under GDPR and applicable privacy laws, you have the right to:</p>
+<ul>
+<li>Access your personal data</li>
+<li>Correct inaccurate data</li>
+<li>Request deletion of your data</li>
+<li>Withdraw consent for location access (via device settings)</li>
+<li>Data portability</li>
+</ul>
+
+<h2>8. Children's Privacy</h2>
+<p>AEROSHARE is not intended for children under 16. We do not knowingly collect data from children.</p>
+
+<h2>9. Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time. Changes will be posted in the app and on this page with the updated date.</p>
+
+<h2>10. Contact Us</h2>
+<p>If you have questions about this Privacy Policy or wish to exercise your rights, contact us at:</p>
+<p><strong>Email:</strong> privacy@aeroshare.app</p>
+
+<p style="margin-top:40px;color:#52525B;font-size:12px;letter-spacing:2px">© 2026 AEROSHARE. ALL RIGHTS RESERVED.</p>
+</body>
+</html>"""
+
 # Include router
 app.include_router(api_router)
 

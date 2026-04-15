@@ -4,6 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
+import * as WebBrowser from 'expo-web-browser';
+
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -59,6 +62,16 @@ export default function Profile() {
         </View>
 
         <TouchableOpacity
+          testID="privacy-policy-btn"
+          style={styles.privacyBtn}
+          onPress={() => WebBrowser.openBrowserAsync(`${BACKEND_URL}/api/privacy`)}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="document-text-outline" size={20} color="#71717A" />
+          <Text style={styles.privacyText}>PRIVACY POLICY</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           testID="logout-btn"
           style={styles.logoutBtn}
           onPress={handleLogout}
@@ -99,6 +112,11 @@ const styles = StyleSheet.create({
   },
   statNum: { fontSize: 18, fontWeight: '900', color: '#09090B' },
   statLabel: { fontSize: 9, fontWeight: '700', color: '#71717A', letterSpacing: 2, marginTop: 4 },
+  privacyBtn: {
+    height: 56, backgroundColor: '#FFFFFF', borderWidth: 2, borderColor: '#E4E4E7',
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8,
+  },
+  privacyText: { fontSize: 14, fontWeight: '800', color: '#71717A', letterSpacing: 3 },
   logoutBtn: {
     height: 56, backgroundColor: '#FFFFFF', borderWidth: 2, borderColor: '#DC2626',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8,
