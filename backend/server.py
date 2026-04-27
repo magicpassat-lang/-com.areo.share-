@@ -605,7 +605,7 @@ a{color:#FDE047}
 <ul>
 <li>Access your personal data</li>
 <li>Correct inaccurate data</li>
-<li>Request deletion of your data</li>
+<li>Request deletion of your data — <a href="/api/delete-account">Delete your account here</a></li>
 <li>Withdraw consent for location access (via device settings)</li>
 <li>Data portability</li>
 </ul>
@@ -621,6 +621,165 @@ a{color:#FDE047}
 <p><strong>Email:</strong> privacy@aeroshare.app</p>
 
 <p style="margin-top:40px;color:#52525B;font-size:12px;letter-spacing:2px">© 2026 AEROSHARE. ALL RIGHTS RESERVED.</p>
+</body>
+</html>"""
+
+# --- Account Deletion Request Page ---
+class DeleteAccountRequest(BaseModel):
+    email: str
+    reason: str = ""
+
+@api_router.post("/account/delete-request")
+async def submit_delete_request(req: DeleteAccountRequest):
+    email = req.email.lower().strip()
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(404, "No account found with this email")
+    # Store deletion request
+    await db.deletion_requests.insert_one({
+        "email": email,
+        "user_id": str(user["_id"]),
+        "reason": req.reason,
+        "status": "pending",
+        "requested_at": datetime.now(timezone.utc),
+    })
+    # Delete all user data immediately
+    user_id = user["_id"]
+    user_id_str = str(user_id)
+    await db.messages.delete_many({"user_id": user_id_str})
+    await db.notifications.delete_many({"user_id": user_id_str})
+    await db.rides.delete_many({"user_id": user_id_str})
+    await db.payment_transactions.delete_many({"user_id": user_id_str})
+    await db.users.delete_one({"_id": user_id})
+    # Mark request as completed
+    await db.deletion_requests.update_one(
+        {"email": email, "status": "pending"},
+        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc)}}
+    )
+    logger.info(f"Account deleted: {email}")
+    return {"status": "deleted", "message": "Your account and all associated data have been permanently deleted."}
+
+@app.get("/api/delete-account", response_class=HTMLResponse)
+async def delete_account_page():
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEROSHARE — Delete Account</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#09090B;color:#d4d4d8;line-height:1.8;padding:24px;max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+h1{color:#FDE047;font-size:24px;font-weight:900;letter-spacing:2px;margin-bottom:4px}
+h2{color:#DC2626;font-size:16px;font-weight:700;margin-top:24px;margin-bottom:12px}
+p{font-size:14px;margin-bottom:12px}
+.logo{font-size:32px;font-weight:900;color:#fff;letter-spacing:-2px;margin-bottom:24px}
+.logo span{color:#FDE047}
+label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:3px;margin-bottom:8px;margin-top:20px}
+input,textarea{width:100%;padding:14px 16px;background:rgba(39,39,42,0.8);border:1px solid rgba(113,113,122,0.3);color:#fff;font-size:15px;outline:none;transition:border 0.2s}
+input:focus,textarea:focus{border-color:#FDE047}
+textarea{resize:vertical;min-height:80px;font-family:inherit}
+.btn{width:100%;padding:16px;background:#DC2626;color:#fff;border:none;font-size:15px;font-weight:900;letter-spacing:3px;cursor:pointer;margin-top:24px;text-transform:uppercase;transition:background 0.2s}
+.btn:hover{background:#B91C1C}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.warning{background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:16px;margin-top:20px}
+.warning p{color:#FCA5A5;font-size:13px;margin:0}
+.success{background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);padding:20px;text-align:center;display:none}
+.success p{color:#86EFAC;font-size:15px;font-weight:600}
+.error{color:#FCA5A5;font-size:13px;margin-top:8px;display:none}
+ul{padding-left:20px;margin:8px 0}
+li{font-size:13px;color:#A1A1AA;margin-bottom:4px}
+.back{display:inline-block;margin-top:24px;color:#FDE047;text-decoration:none;font-size:12px;letter-spacing:2px;font-weight:700}
+</style>
+</head>
+<body>
+<div>
+<div class="logo">AERO<span>SHARE</span></div>
+<h1>DELETE YOUR ACCOUNT</h1>
+<p style="color:#71717A;font-size:12px;letter-spacing:2px">REQUEST PERMANENT DATA DELETION</p>
+
+<div id="form-section">
+<p style="margin-top:20px">Enter the email address associated with your AEROSHARE account. This action is <strong style="color:#FCA5A5">permanent and irreversible</strong>.</p>
+
+<h2>WHAT WILL BE DELETED:</h2>
+<ul>
+<li>Your account and profile information</li>
+<li>All ride history and bookings</li>
+<li>All chat messages</li>
+<li>All notifications</li>
+<li>Payment transaction records</li>
+</ul>
+
+<div class="warning">
+<p>⚠ This action cannot be undone. All your data will be permanently removed from our servers. Stripe payment records are managed separately by Stripe per their data retention policy.</p>
+</div>
+
+<label>EMAIL ADDRESS</label>
+<input type="email" id="email" placeholder="you@email.com" required>
+
+<label>REASON (OPTIONAL)</label>
+<textarea id="reason" placeholder="Tell us why you're leaving..."></textarea>
+
+<p id="error-msg" class="error"></p>
+
+<button class="btn" id="delete-btn" onclick="submitDeletion()">
+DELETE MY ACCOUNT PERMANENTLY
+</button>
+
+<a href="/api/privacy" class="back">← PRIVACY POLICY</a>
+</div>
+
+<div id="success-section" class="success">
+<p style="font-size:24px;margin-bottom:12px">✓</p>
+<p>YOUR ACCOUNT HAS BEEN DELETED</p>
+<p style="color:#71717A;font-size:13px;margin-top:8px">All your data has been permanently removed from our servers.</p>
+<a href="/" class="back" style="display:block;text-align:center;margin-top:20px">← BACK TO HOME</a>
+</div>
+</div>
+
+<script>
+async function submitDeletion() {
+    const email = document.getElementById('email').value.trim();
+    const reason = document.getElementById('reason').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+    const btn = document.getElementById('delete-btn');
+
+    if (!email) {
+        errorMsg.textContent = 'Please enter your email address';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    if (!confirm('Are you sure you want to permanently delete your account? This action CANNOT be undone.')) {
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'DELETING...';
+    errorMsg.style.display = 'none';
+
+    try {
+        const response = await fetch('/api/account/delete-request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, reason })
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.detail || 'Failed to delete account');
+        }
+
+        document.getElementById('form-section').style.display = 'none';
+        document.getElementById('success-section').style.display = 'block';
+    } catch (error) {
+        errorMsg.textContent = error.message;
+        errorMsg.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'DELETE MY ACCOUNT PERMANENTLY';
+    }
+}
+</script>
 </body>
 </html>"""
 

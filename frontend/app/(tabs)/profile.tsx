@@ -72,6 +72,16 @@ export default function Profile() {
         </TouchableOpacity>
 
         <TouchableOpacity
+          testID="delete-account-btn"
+          style={styles.deleteBtn}
+          onPress={() => WebBrowser.openBrowserAsync(`${BACKEND_URL}/api/delete-account`)}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="trash-outline" size={20} color="#DC2626" />
+          <Text style={styles.deleteText}>DELETE ACCOUNT</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           testID="logout-btn"
           style={styles.logoutBtn}
           onPress={handleLogout}
@@ -112,6 +122,11 @@ const styles = StyleSheet.create({
   },
   statNum: { fontSize: 18, fontWeight: '900', color: '#09090B' },
   statLabel: { fontSize: 9, fontWeight: '700', color: '#71717A', letterSpacing: 2, marginTop: 4 },
+  deleteBtn: {
+    height: 56, backgroundColor: '#FFFFFF', borderWidth: 2, borderColor: '#DC2626',
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8,
+  },
+  deleteText: { fontSize: 14, fontWeight: '800', color: '#DC2626', letterSpacing: 3 },
   privacyBtn: {
     height: 56, backgroundColor: '#FFFFFF', borderWidth: 2, borderColor: '#E4E4E7',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8,
