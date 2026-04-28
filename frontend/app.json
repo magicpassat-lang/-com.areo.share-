@@ -1,20 +1,22 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "AEROSHARE",
+    "slug": "aeroshare",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/play-store-icon.png",
-    "scheme": "frontend",
+    "scheme": "aeroshare",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.areo.share",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Find riders near your location"
       }
     },
     "android": {
+      "package": "com.areo.share",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/play-store-icon.png",
         "backgroundColor": "#09090B"
@@ -41,7 +43,8 @@
           "backgroundColor": "#09090B"
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
